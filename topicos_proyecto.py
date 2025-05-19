@@ -1,67 +1,84 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
 import tweepy
 import json
 import time
+from pymongo import MongoClient
 from pysentimiento import create_analyzer
-from pymongo import MongoClient  # Importar pymongo para conectarse a MongoDB
 
-# Se crea una cuenta como desarrollador en X (antes Twitter) y se reemplaza con tu Bearer Token
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Necesario para usar flash (mensajes)
+
+# ==== CONFIGURACIÓN DE TWITTER ====
 bearer_token = "AAAAAAAAAAAAAAAAAAAAAGr70AEAAAAA5%2BgtYWJqdX2kiPk6lOjn3VwRTjo%3D6TweMDvCIBvFLtkND6XvzWRAhDjv2FSQTKoSrcRqhXn25tHd9H"
-
-# Crear cliente con la API v2
 client = tweepy.Client(bearer_token=bearer_token)
 
-# Inicializa el analizador de sentimiento
+# ==== CONFIGURACIÓN DE MONGODB ====
+mongo_uri = "mongodb://localhost:27017"
+mongo_client = MongoClient(mongo_uri)
+db = mongo_client["twitter_db"]
+collection = db["tweets_sentimiento"]
+
+# ==== ANALIZADOR DE SENTIMIENTO ====
 analyzer = create_analyzer(task="sentiment", lang="es")
 
-# Conexión a MongoDB Atlas
-mongo_client = MongoClient("mongodb+srv://jacarrero22:fdGJLaVpqYHPZX26@cluster0.qrgnqoz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-db = mongo_client["topicos_especiales"]  # Nombre de la base de datos
-collection = db["tweets"]  # Nombre de la colección
-
-# Crear un índice único en el campo "id" para evitar duplicados
-collection.create_index("id", unique=True)
-
-# Obtener los últimos 10 tweets de una cuenta específica
+# ==== FUNCION PARA OBTENER Y GUARDAR TWEETS ====
 def get_latest_tweets(username):
-    try:
-        time.sleep(5)  # Espera 5 segundos entre peticiones para evitar bloqueos
+    time.sleep(5)  # Evitar bloqueos
 
-        user = client.get_user(username=username)
-        user_id = user.data.id
+    user = client.get_user(username=username)
+    user_id = user.data.id
+    tweets = client.get_users_tweets(id=user_id, max_results=10)
 
-        tweets = client.get_users_tweets(id=user_id, max_results=10)
+    if tweets.data:
+        tweets_data = []
 
-        if tweets.data:
-            for tweet in tweets.data:
-                tweet_text = tweet.text
+        for tweet in tweets.data:
+            tweet_text = tweet.text
+            result = analyzer.predict(tweet_text)
 
-                # Analiza el sentimiento
-                result = analyzer.predict(tweet_text)
+            tweet_doc = {
+                "id": tweet.id,
+                "username": username,
+                "text": tweet_text,
+                "sentiment": result.output,
+                "probs": dict(result.probas)
+            }
+            tweets_data.append(tweet_doc)
 
-                # Crear el documento para MongoDB
-                tweet_document = {
-                    "id": tweet.id,
-                    "text": tweet_text,
-                    "sentiment": result.output,  # 'POS', 'NEG', 'NEU'
-                    "probs": result.probas,  # Probabilidades por clase
-                    "username": username
-                }
+        collection.insert_many(tweets_data)
+        return True
+    else:
+        return False
 
-                # Insertar el documento en MongoDB (evitar duplicados con índice único)
-                try:
-                    collection.insert_one(tweet_document)
-                    print(f"Tweet con ID {tweet.id} insertado en la base de datos.")
-                except Exception as e:
-                    print(f"Tweet con ID {tweet.id} ya existe en la base de datos. {e}")
+# ==== LISTA DE CUENTAS ====
+cuentas = {
+    "Real Madrid": "realmadrid",
+    "FC Barcelona": "FCBarcelona",
+    "Athletic Club": "AthleticClub",
+    "Atlético de Madrid": "Atleti",
+    "Club deportivo leganés": "CDLeganes",
+    "Villarreal CF": "VillarrealCF",
+    "Real Sociedad": "RealSociedad",
+    "Sevilla FC": "SevillaFC",
+    "Real Betis": "RealBetis",
+    "Valencia CF": "valenciacf"
+}
 
-            print(f"Tweets de @{username} analizados y guardados en la base de datos MongoDB.")
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        cuenta = request.form.get("cuenta")
+        username = cuentas.get(cuenta)
+        if username:
+            success = get_latest_tweets(username)
+            if success:
+                flash(f"Tweets de @{username} guardados exitosamente.", "success")
+            else:
+                flash(f"No se encontraron tweets para @{username}.", "warning")
         else:
-            print(f"No hay tweets recientes para @{username}.")
+            flash("Cuenta no válida.", "danger")
+        return redirect(url_for("index"))
+    return render_template("index.html", cuentas=cuentas.keys())
 
-    except tweepy.TweepyException as e:
-        print(f"Error: {e}")
-    except Exception as e:
-        print(f"Error general: {e}")
-
-# Llamada a la función
-get_latest_tweets("FCBarcelona_es")
+if __name__ == "__main__":
+    app.run(debug=True)
