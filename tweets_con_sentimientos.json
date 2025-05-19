@@ -1,0 +1,102 @@
+[
+    {
+        "id": 1924072743475048947,
+        "text": "Los mejores momentos de la liga de Hansi Flick\n#laligahighlights https://t.co/ScXWW4x9ae",
+        "sentiment": "POS",
+        "probs": {
+            "NEG": 0.07439368963241577,
+            "NEU": 0.4435610771179199,
+            "POS": 0.48204517364501953
+        }
+    },
+    {
+        "id": 1924045133709783186,
+        "text": "🚨 𝐂𝐎𝐍𝐕𝐎𝐂𝐀𝐓𝐎𝐑𝐈𝐀🚨\n#BarçaVillarreal https://t.co/YpWv8ivK7m",
+        "sentiment": "NEU",
+        "probs": {
+            "NEG": 0.22579804062843323,
+            "NEU": 0.6991825103759766,
+            "POS": 0.07501938194036484
+        }
+    },
+    {
+        "id": 1924023452979094010,
+        "text": "💫 La celebración de la Liga se traslada a Montjuïc\n📝 LA PREVIA 👇 https://t.co/Qwux32UBm8",
+        "sentiment": "NEU",
+        "probs": {
+            "NEG": 0.09895788878202438,
+            "NEU": 0.7690450549125671,
+            "POS": 0.13199713826179504
+        }
+    },
+    {
+        "id": 1924012289692189041,
+        "text": "𝗨𝗡 𝗗𝗜𝗔 𝗗𝗘 𝗣𝗔𝗥𝗧𝗜𝗧 https://t.co/HxIXqV7HUC",
+        "sentiment": "POS",
+        "probs": {
+            "NEG": 0.10687866806983948,
+            "NEU": 0.3145034611225128,
+            "POS": 0.5786179304122925
+        }
+    },
+    {
+        "id": 1923906629386297666,
+        "text": "Buenas noches, culers 🏆🏆🏆 https://t.co/5N37j1KZyH",
+        "sentiment": "NEU",
+        "probs": {
+            "NEG": 0.18244804441928864,
+            "NEU": 0.6226562261581421,
+            "POS": 0.1948956400156021
+        }
+    },
+    {
+        "id": 1923891666613592249,
+        "text": "Ahora, a por el #BarçaVillarreal 💪 https://t.co/xEzAfZojUK",
+        "sentiment": "NEU",
+        "probs": {
+            "NEG": 0.13150820136070251,
+            "NEU": 0.6053088307380676,
+            "POS": 0.26318296790122986
+        }
+    },
+    {
+        "id": 1923876183210590360,
+        "text": "Cumpleañero 🎂 https://t.co/UCibJTQXCi",
+        "sentiment": "NEU",
+        "probs": {
+            "NEG": 0.045921746641397476,
+            "NEU": 0.6797508001327515,
+            "POS": 0.27432745695114136
+        }
+    },
+    {
+        "id": 1923861083103822253,
+        "text": "Están de dulce https://t.co/6umKZLf3l8",
+        "sentiment": "POS",
+        "probs": {
+            "NEG": 0.05440235510468483,
+            "NEU": 0.422580748796463,
+            "POS": 0.5230168700218201
+        }
+    },
+    {
+        "id": 1923845987359150571,
+        "text": "Se nos escapa la sonrisa https://t.co/sOrpkvQi3E",
+        "sentiment": "NEG",
+        "probs": {
+            "NEG": 0.6866044998168945,
+            "NEU": 0.2515493929386139,
+            "POS": 0.06184616684913635
+        }
+    },
+    {
+        "id": 1923830884546801912,
+        "text": "Ganaron un Mundial juntos y hoy se han visto en el entreno. ¡Bienvenido, Joachim Löw! https://t.co/eldYbfTpPQ",
+        "sentiment": "POS",
+        "probs": {
+            "NEG": 0.00627954350784421,
+            "NEU": 0.03972179442644119,
+            "POS": 0.9539986848831177
+        }
+    }
+]
